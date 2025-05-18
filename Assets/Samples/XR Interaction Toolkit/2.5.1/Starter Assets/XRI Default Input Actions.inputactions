@@ -705,7 +705,7 @@
                     "name": "Activate",
                     "type": "Button",
                     "id": "0c0991c5-d329-4afc-8892-1076b440477c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -723,7 +723,7 @@
                     "name": "UI Press",
                     "type": "Button",
                     "id": "7e1eced7-c774-4fe5-be8f-d8711f646d9e",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -768,7 +768,7 @@
                     "name": "Scale Toggle",
                     "type": "Button",
                     "id": "80ed7d74-56de-473c-bf76-da3bdd16b562",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -960,8 +960,8 @@
                 },
                 {
                     "name": "",
-                    "id": "ecfd6783-a524-4373-a586-435a4de2621f",
-                    "path": "<XRController>{LeftHand}/{PrimaryTrigger}",
+                    "id": "42cc178a-2f84-496d-b889-040584ed521a",
+                    "path": "<XRController>{LeftHand}/{TriggerButton}",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1509,6 +1509,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ConfirmAction",
+                    "type": "Button",
+                    "id": "18d99c91-cf38-486e-903b-224686a8fb8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Select Value",
                     "type": "Value",
                     "id": "39bbf1ac-21a3-413d-90f6-6dbf6efeaabe",
@@ -1619,6 +1628,17 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "680200f6-ca84-4812-bb76-298b060d3811",
+                    "path": "<XRController>{RightHand}/{TriggerButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConfirmAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1781,15 +1801,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ConfirmAction",
-                    "type": "Button",
-                    "id": "e4881538-84ce-43c5-971f-b098c2436b97",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Teleport Mode Activate",
                     "type": "Value",
                     "id": "a6c7231d-c55d-4dd4-9e87-877bb5522ef5",
@@ -1862,17 +1873,6 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Teleport Select",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c039c001-004d-4373-b4a0-3bf4aaaf8840",
-                    "path": "<XRController>{RightHand}/{PrimaryTrigger}",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ConfirmAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

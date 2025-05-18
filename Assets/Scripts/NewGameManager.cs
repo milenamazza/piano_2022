@@ -140,7 +140,8 @@ public class GameManager : MonoBehaviour
                 level1.selectCurrentNote(currentNote);
                 break;
             case "Note":
-                level2 = new ScreenNoteManager();
+                GameObject obj = new GameObject("ScreenNoteManager");
+                level2 = obj.AddComponent<ScreenNoteManager>();
                 level2.InitManager(screen2);
                 level2.selectCurrentNote(currentNote);
                 break;
