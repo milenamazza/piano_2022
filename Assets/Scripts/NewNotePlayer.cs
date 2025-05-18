@@ -44,12 +44,14 @@ public class NotePlayer : MonoBehaviour
         }
     }
 
-    public void PlayNoteKey(GameObject noteKey)
+    public void PlayNoteKey(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
+        GameObject noteKey = args.interactableObject.transform.gameObject;
         string noteName = GetNoteNameFromKey(noteKey);
         PlayNoteString(noteName);
         GameManager.Instance.RegisterPlayedNote(noteName);
     }
+
 
     public void PlayCurrnetNote()
     {
@@ -58,11 +60,12 @@ public class NotePlayer : MonoBehaviour
         PlayNoteString(noteName);
     }
 
-        // 🔊 Inizia a suonare la nota (finché non viene rilasciata)
-    public void StartNote(GameObject noteKey)
+    // 🔊 Inizia a suonare la nota (finché non viene rilasciata)
+    public void StartNote(UnityEngine.XR.Interaction.Toolkit.SelectEnterEventArgs args)
     {
         if (!GameManager.Instance.GetInPlay()) return;
 
+        GameObject noteKey = args.interactableObject.transform.gameObject;
         string noteName = GetNoteNameFromKey(noteKey);
         string path = $"Notes/{noteName}";
         AudioClip clip = Resources.Load<AudioClip>(path);
@@ -70,7 +73,7 @@ public class NotePlayer : MonoBehaviour
         if (clip != null && audioSource != null)
         {
             audioSource.clip = clip;
-            audioSource.loop = false; // o true se vuoi nota sostenuta
+            audioSource.loop = false;
             audioSource.Play();
             GameManager.Instance.RegisterPlayedNote(noteName);
         }
@@ -79,6 +82,7 @@ public class NotePlayer : MonoBehaviour
             Debug.LogWarning($"Clip '{noteName}' non trovato.");
         }
     }
+
 
 
     // 🛑 Ferma la riproduzione con sfumatura
