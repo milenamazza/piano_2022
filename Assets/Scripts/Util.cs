@@ -32,4 +32,25 @@ public static class Utils
 
         return result;
     }
+
+    public static void DeselectPiano(this GameObject piano){
+        foreach (Transform octave in piano.transform){
+            foreach (Transform key in octave){
+                Transform nameNoteText = key.Find("NameNoteText");
+                if (nameNoteText != null)
+                    nameNoteText.gameObject.SetActive(false);
+                
+                // Disattiva Key_select se esiste
+                Transform keySelect = key.Find("Key_select");
+                if (keySelect != null)
+                    keySelect.gameObject.SetActive(false);
+
+                // Richiama OnHoverExit se lo script HoverHighlight è presente
+                HoverHighlight hover = key.GetComponent<HoverHighlight>();
+                if (hover != null){
+                    hover.DisableKey();
+                }
+            }
+        }
+    }
 }

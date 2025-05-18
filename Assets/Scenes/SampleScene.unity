@@ -2111,6 +2111,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2131816123}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &335107208 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3664828022325257135, guid: d6982d8e725910647922daacce4cb2aa,
+    type: 3}
+  m_PrefabInstance: {fileID: 1244101626}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &341044393
 GameObject:
   m_ObjectHideFlags: 0
@@ -5456,6 +5462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyCamera: {fileID: 0}
+  canRecognize: 0
   waitTime: 1
   leftController: {fileID: 1121610748}
   rightController: {fileID: 1697924090}
@@ -12571,8 +12578,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4d7038a0c42f449aeadfa855cf61e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenMenu: {fileID: 479782895}
   screen1: {fileID: 1365555341}
   screen2: {fileID: 529188090}
+  screen3: {fileID: 899976523}
+  winPopUp: {fileID: 2029014585}
+  btnReset: {fileID: 335107208}
   noteManager: {fileID: 1917780242}
   menuManager: {fileID: 789289796}
   celebrationManager: {fileID: 1691689756}
@@ -12584,7 +12595,6 @@ MonoBehaviour:
   correctSound: {fileID: 8300000, guid: 9c76f6ee06bed9d44b383c73f6693b5e, type: 3}
   wrongSound: {fileID: 8300000, guid: 96a147a48371b8a48a1229babc3e12c2, type: 3}
   winSound: {fileID: 8300000, guid: 5c01d1beb383b8f419ee76da784a78ea, type: 3}
-  loseSound: {fileID: 0}
 --- !u!1 &1572298481
 GameObject:
   m_ObjectHideFlags: 0
@@ -14486,6 +14496,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 291397804645155550, guid: d6878e1999eb4b44a9f5a263af86c185,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 657184242161839408, guid: d6878e1999eb4b44a9f5a263af86c185,
         type: 3}
       propertyPath: m_LocalPosition.x

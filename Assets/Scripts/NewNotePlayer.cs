@@ -1,84 +1,117 @@
 using System.Collections.Generic;
+using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 // Questo componente gestisce la riproduzione audio delle note
 public class NotePlayer : MonoBehaviour
 {
-    // Riferimento all'AudioSource per riprodurre i suoni
-    private AudioSource audioSource; 
-    
-    // Metodo chiamato all'avvio del GameObject
+    private AudioSource audioSource;
+
     public void Start()
     {
-        // Prova a recuperare un AudioSource già presente sul GameObject
         audioSource = GetComponent<AudioSource>();
-
-        // Se non esiste, lo aggiunge dinamicamente e mostra un warning
         if (audioSource == null){
             Debug.LogWarning("Nessun AudioSource trovato sul GameObject! Lo aggiungo.");
             audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
-    /// <summary>
-    /// Riproduce un file audio associato al nome della nota passato come stringa
-    /// </summary>
-    /// <param name="noteName">Il nome della nota (es. "C4", "DSharp3")</param>
-    private void PlayNoteString(string noteName){
-        // Riproduce solo se il gioco è in modalità "inPlay"
-        if (GameManager.Instance.GetInPlay()) {
-            // Costruisce il percorso della clip dentro Resources/Notes/
-            string path = $"Notes/{noteName}";
-
-            // Carica la clip audio dal path
-            AudioClip clip = Resources.Load<AudioClip>(path);
-
-            if (clip != null) {
-                // Se l'AudioSource è presente, riproduce la nota
-                if (audioSource != null){
-                    audioSource.PlayOneShot(clip);
-                } 
-                else Debug.Log("AudioSource non assegnato!");
-            }
-            else Debug.Log($"Clip '{noteName}' non trovato");
-        }
-    }
-
-    /// <summary>
-    /// Ricava il nome della nota da un GameObject (tasto del piano) e la riproduce
-    /// </summary>
-    /// <param name="noteKey">Il GameObject del tasto premuto</param>
-    public void PlayNoteKey(GameObject noteKey ){        
-        // Il nome dell'ottava è preso dal nome del genitore (es. "Octave_3")
+    private string GetNoteNameFromKey(GameObject noteKey)
+    {
         Transform parent = noteKey.transform.parent;
-
-        // Ricava il nome base della nota (es. "C", "D", rimuovendo "Key_" e "_Black")
         string baseName = noteKey.name.Replace("Key_", "").Replace("_Black", "");
-
-        // Ricava l'ottava (numero) dal nome del genitore
         string octave = parent.name.Replace("Octave_", "");
 
-        // Se è un tasto nero, aggiunge "Sharp" (es. C -> CSharp)
         if (noteKey.name.Contains("_Black"))
             baseName += "Sharp";
 
-        // Costruisce il nome completo della nota (es. "C4", "FSharp2")
-        string noteName = baseName + octave;
-
-        // Riproduce la nota
-        PlayNoteString(noteName); //suona la nota
-
-        GameManager.Instance.RegisterPlayedNote(noteName);
-
+        return baseName + octave;
     }
 
-    /// <summary>
-    /// Riproduce la nota corrente da indovinare, presa dal GameManager
-    /// </summary>
-    public void PlayCurrnetNote(){ 
+    private void PlayNoteString(string noteName)
+    {
+        if (GameManager.Instance.GetInPlay()) {
+            string path = $"Notes/{noteName}";
+            AudioClip clip = Resources.Load<AudioClip>(path);
+
+            if (clip != null && audioSource != null){
+                audioSource.PlayOneShot(clip);
+            } else {
+                Debug.Log($"Clip '{noteName}' non trovato o AudioSource mancante");
+            }
+        }
+    }
+
+    public void PlayNoteKey(GameObject noteKey)
+    {
+        string noteName = GetNoteNameFromKey(noteKey);
+        PlayNoteString(noteName);
+        GameManager.Instance.RegisterPlayedNote(noteName);
+    }
+
+    public void PlayCurrnetNote()
+    {
         string noteName = GameManager.Instance.GetCurrentNote();
-        Debug.Log(noteName); // debug del nome della nota
+        Debug.Log(noteName);
         PlayNoteString(noteName);
     }
+
+        // 🔊 Inizia a suonare la nota (finché non viene rilasciata)
+    public void StartNote(GameObject noteKey)
+    {
+        if (!GameManager.Instance.GetInPlay()) return;
+
+        string noteName = GetNoteNameFromKey(noteKey);
+        string path = $"Notes/{noteName}";
+        AudioClip clip = Resources.Load<AudioClip>(path);
+
+        if (clip != null && audioSource != null)
+        {
+            audioSource.clip = clip;
+            audioSource.loop = false; // o true se vuoi nota sostenuta
+            audioSource.Play();
+            GameManager.Instance.RegisterPlayedNote(noteName);
+        }
+        else
+        {
+            Debug.LogWarning($"Clip '{noteName}' non trovato.");
+        }
+    }
+
+
+    // 🛑 Ferma la riproduzione con sfumatura
+    public void StopNote()
+{
+    if (fadeOutRoutine != null)
+        StopCoroutine(fadeOutRoutine);
+
+    fadeOutRoutine = StartCoroutine(FadeOutAndStop(0.2f)); // durata fade-out in secondi
+}
+
+    private Coroutine fadeOutRoutine;
+
+    private IEnumerator FadeOutAndStop(float duration)
+    {
+        if (audioSource == null || !audioSource.isPlaying)
+            yield break;
+
+        float startVolume = audioSource.volume;
+
+        float time = 0f;
+        while (time < duration)
+        {
+            audioSource.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        audioSource.volume = 0f;
+        audioSource.Stop();
+        audioSource.volume = startVolume; // reset per il prossimo suono
+    }
+
+
+    
 }

@@ -9,35 +9,17 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
     // Riferimenti ai due schermi UI principali: menu iniziale e schermata di gioco
-    public GameObject screen1, screen2;
+    public GameObject screenMenu, screen1, screen2, screen3, winPopUp, btnReset;
 
     // Singleton: accesso globale all'istanza del GameManager
     public static GameManager Instance { get; private set; }
 
     // Manager per note, UI e menu. Istanziati come oggetti "normali" (non MonoBehaviour)
-    [SerializeField] private NoteManager noteManager;
-    //[SerializeField] private GameInfoManager gameInfoManager ;
-
+    [SerializeField] public NoteManager noteManager;
     public MenuManager menuManager; // Sarà assegnato da Inspector
     public CelebrationManager celebrationManager; // Sarà assegnato da Inspector
 
     public GameObject piano;
-
-    // Parametri di gioco selezionabili dall’utente
-    private string selectedMode = "Easy";
-    private int selectedOctaves = 1, n_note = 10;
-
-    // Stato di gioco
-    private int lives = 0, maxLives = 3, point = 0;
-    private bool inPlay = false;
-    private bool isVisibleNameNote = false;
-
-    // Stack di note da indovinare
-    private Stack<Note> currentSequence = new Stack<Note>();
-    private Note currentNote;
-
-    // per il controllo delle note
-    private string lastPlayedNote = "";
 
     //riferimento al nuovo tasto
     public InputActionReference confirmNoteActionLeft;
@@ -48,21 +30,53 @@ public class GameManager : MonoBehaviour
     public AudioClip correctSound;
     public AudioClip wrongSound;
     private AudioSource audioSource;
-
     //suoni vittoria e sconfitta
     public AudioClip winSound;
-    public AudioClip loseSound;
 
 
+    // Stack di note da indovinare
+    private Stack<Note> currentSequence = new Stack<Note>();
+    private Note currentNote;
+    // per il controllo delle note
+    private string lastPlayedNote = "";
+
+    //Manager con dinamiche livello corrente
+    private ScreenBaseManager level1;
+    private ScreenNoteManager level2;
+    private ScreenMelodiaManager level3;
+
+
+    //DEFINIZIONE VARIABILI CON GETTER E SETTER
+    private string selectedMode { get; set; }
+    public string GetMode() => selectedMode;
+    public void SetMode(string mode) => selectedMode = mode;
+
+    private string selectedMelody { get; set; }
+    public string GetMelody() => selectedMelody;
+    public void SetMelody(string melody) => selectedMelody = melody;
+
+    // Stato di gioco
+    private bool inPlay { get; set; }
+    public bool GetInPlay() => inPlay;
+
+    // Funzioni per il livello 3
+    public Note GetCurrentNoteObj() => currentNote;
+    public List<Note> GetCurrentSequenceCopy() => new List<Note>(currentSequence);
 
 
     // Unity callback: chiamato appena l’oggetto viene inizializzato
     private void Awake()
     {
         // Inizializza i manager UI con i riferimenti ai GameObject UI passati via Inspector
-        menuManager.InitFromParent(screen1, screen2);
-        //gameInfoManager.InitFromParent(screen2);
-        selectedMode = "Easy";
+        menuManager.InitFromParent(screenMenu, screen1, screen2, screen3);
+        Transform parent = screenMenu.transform.parent;
+        winPopUp = parent.FindDeepChild("WinPopup")?.gameObject;
+        btnReset = parent.FindDeepChild("btnReset")?.gameObject;
+
+        //imposta parametri di default
+        selectedMode = "Note";
+        selectedMelody = "Happy Birthday";
+        inPlay = false;
 
         // Singleton pattern: impedisce la creazione di più GameManager
         if (Instance != null && Instance != this)
@@ -74,45 +88,41 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject); // Persisti il GameManager anche se si cambia scena
 
+        //Boooo
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
-
     }
 
     // Avvia una nuova partita
     public void StartGame()
     {
-        // Passa dallo schermo di menu a quello di gioco
-        menuManager.SwitchScreen();
+        // UI Passa dallo schermo di menu a quello di gioco
+        menuManager.SwitchScreen(selectedMode); 
         menuManager.HideAllPopups();
 
         // Abilita lo stato di gioco
         inPlay = true;
+        btnReset.SetActive(true);
 
-        // Reset di vite e punteggio
-        lives = maxLives;
-        point = 0;
-        //gameInfoManager.StartInfo(lives, point); // Aggiorna l'UI
-
+        //GESTIONE SEQUENZA NOTE E NOTA CORRENTE
         // Genera la sequenza di note da indovinare
-        List<Note> noteList = noteManager.GenerateSequence(selectedMode, selectedOctaves, n_note);
+        List<Note> noteList = noteManager.GenerateSequence(selectedMelody);
         currentSequence = new Stack<Note>(noteList);
-
+        currentNote = currentSequence.Pop();
+        Debug.Log(currentNote);
+        //UI KEY PIANO
         // 🔥 Abilita/disabilita tasti visivamente
         // 🔥 Imposta le ottave attive per tutti i tasti
-        List<int> allowedOctaves = CalculateAllowedOctaves(selectedOctaves);
+        List<int> allowedOctaves = CalculateAllowedOctaves(1);
         HoverHighlight.AllowedOctaves = allowedOctaves;
-
-        foreach (HoverHighlight key in FindObjectsOfType<HoverHighlight>())
-        {
+        foreach (HoverHighlight key in FindObjectsOfType<HoverHighlight>()){
             key.UpdateKeyState();
         }
 
+        //avvio effettivo della modalità di gioco
+        StartMode();
 
-        currentNote = currentSequence.Pop();
-
-        Debug.Log(currentNote);
-
+        //attiva i bottoni per confermare
         if (confirmNoteActionLeft != null)
             confirmNoteActionLeft.action.Enable();
 
@@ -121,42 +131,25 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Imposta la modalità selezionata (es. Easy o Hard)
-    public void SetMode(string mode){
-        selectedMode = mode;
-        menuManager.SetMode(mode); // Aggiorna la UI
-    }
+    // ?
+    public void StartMode(){
+        switch(selectedMode){
+            case "Base":
+                level1 = new ScreenBaseManager();
+                level1.InitManager(piano, screen1);
+                level1.selectCurrentNote(currentNote);
+                break;
+            case "Note":
+                level2 = new ScreenNoteManager();
+                level2.InitManager(screen2);
+                level2.selectCurrentNote(currentNote);
+                break;
+            case "Melodia":
+                level3 = new ScreenMelodiaManager();
+                level3.InitManager(screen3);
+                break;
 
-    public string GetMode(){
-        return selectedMode;
-    }
-
-    // Imposta il numero di ottave selezionato dal dropdown
-    public void SetOctaves(int dropdownIndex){
-        Debug.Log(selectedOctaves+" "+dropdownIndex);
-        selectedOctaves = menuManager.SetOctaves(selectedOctaves, dropdownIndex);
-    }
-
-    // Restituisce il numero di ottave attualmente selezionato
-    public int GetOctaves(int dropdownIndex){
-        return selectedOctaves;
-    }
-
-    // Restituisce se siamo in stato di gioco o meno
-    public bool GetInPlay(){
-        return inPlay;
-    }
-
-    // Scala le vite di uno e aggiorna l'UI
-    public void DescremenLive(){
-        lives--;
-        //gameInfoManager.SetLife(lives);
-    }
-
-    // Aumenta il punteggio e aggiorna l'UI
-    public void IncrementPoint(){
-        point++;
-        //gameInfoManager.SetPoint(point);
+        }
     }
 
     // Restituisce la nota attualmente da indovinare
@@ -172,72 +165,91 @@ public class GameManager : MonoBehaviour
         Debug.Log("Nota registrata: " + playedNote);
     }
 
-    private void Update()
-    {
+    public void AdvanceNote(){
+        //VITTORIAAAA
+        if (currentSequence.Count == 0){
+            Debug.Log("Sequenza finita!");
 
+            inPlay = false;
+            PlayEndSound(true);
+            winPopUp.SetActive(true);winPopUp.SetActive(true);
+            celebrationManager.PlayConfetti();
+            piano.DeselectPiano();
+
+            switch(selectedMode){
+                case "Base": level1.Win(); break;
+                case "Note":level2.Win();break;
+                case "Melodia":level3.Win();break;
+            }
+
+            //StartCoroutine(ReturnToMenuAfterDelay(4f));
+            return;
+        }
+        else{
+            currentNote = currentSequence.Pop();
+
+            switch(selectedMode){
+                case "Base":
+                    level1.selectCurrentNote(currentNote);
+                    break;
+                case "Note":
+                    level2.selectCurrentNote(currentNote);
+                    break;    
+                // altri casi...
+            }
+        }
     }
+
 
     private void CheckLastNote()
     {
-        if (lastPlayedNote == ""){
+        if (lastPlayedNote == "")
+        {
             Debug.Log("Nessuna nota registrata.");
             return;
         }
-        GameObject obj = GameObject.Find("ButtonNote");
-        obj.GetComponent<Btn>()?.ShowButton();
 
-        if (lastPlayedNote == currentNote.ToString())
+        if (selectedMode == "Melodia")
         {
-            IncrementPoint();
-            PlayFeedbackSound(true);
-            if (currentSequence.Count > 0){
-                currentNote = currentSequence.Pop();
-            }
-            else{
-                Debug.Log("Hai finito tutte le note!");
-                inPlay = false;
-                menuManager.ShowEndPopup(true); // ✅ Mostra popup vittoria
-                PlayEndSound(true);
-                celebrationManager.PlayConfetti(); // o direttamente: confetti.Play();
-                StartCoroutine(ReturnToMenuAfterDelay(6f)); // ✅ Ritorna al menu dopo 3 secondi
-            }
+            level3.OnConfirm(lastPlayedNote);
         }
-        else{
-            DescremenLive();
-            PlayFeedbackSound(false);
-
-            if (lives <= 0)
+        else
+        {
+            if (lastPlayedNote == currentNote.ToString())
             {
-                inPlay = false;
-                menuManager.ShowEndPopup(false); // ✅ Mostra popup sconfitta
-                PlayEndSound(false);
-                celebrationManager.PlayConfetti(); // o direttamente: confetti.Play();
-                StartCoroutine(ReturnToMenuAfterDelay(6f)); // ✅ Ritorna al menu dopo 3 secondi
+                PlayFeedbackSound(true);
+                AdvanceNote();
+            }
+            else
+            {
+                PlayFeedbackSound(false);
             }
         }
 
-        lastPlayedNote = ""; // Reset!
+        lastPlayedNote = "";
     }
 
 
 
-private void OnEnable()
-{
-    if (confirmNoteActionLeft != null)
-        confirmNoteActionLeft.action.performed += OnConfirmNote;
 
-    if (confirmNoteActionRight != null)
-        confirmNoteActionRight.action.performed += OnConfirmNote;
-}
+    private void OnEnable()
+    {
+        if (confirmNoteActionLeft != null)
+            confirmNoteActionLeft.action.performed += OnConfirmNote;
 
-private void OnDisable()
-{
-    if (confirmNoteActionLeft != null)
-        confirmNoteActionLeft.action.performed -= OnConfirmNote;
+        if (confirmNoteActionRight != null)
+            confirmNoteActionRight.action.performed += OnConfirmNote;
+    }
 
-    if (confirmNoteActionRight != null)
-        confirmNoteActionRight.action.performed -= OnConfirmNote;
-}
+    private void OnDisable()
+    {
+        if (confirmNoteActionLeft != null)
+            confirmNoteActionLeft.action.performed -= OnConfirmNote;
+
+        if (confirmNoteActionRight != null)
+            confirmNoteActionRight.action.performed -= OnConfirmNote;
+    }
+
 
     private void OnConfirmNote(InputAction.CallbackContext ctx)
     {
@@ -248,35 +260,23 @@ private void OnDisable()
     // per la gestione dei tasti
 
     private List<int> CalculateAllowedOctaves(int selectedOctaves)
-{
-    int center = 4;
-    List<int> allowedOctaves = new List<int> { center };
-
-    int up = 1, down = 1;
-    while (allowedOctaves.Count < selectedOctaves)
     {
-        if (allowedOctaves.Count < selectedOctaves)
-            allowedOctaves.Add(center - down++);
-        if (allowedOctaves.Count < selectedOctaves)
-            allowedOctaves.Add(center + up++);
+        int center = 4;
+        List<int> allowedOctaves = new List<int> { center };
+
+        int up = 1, down = 1;
+        while (allowedOctaves.Count < selectedOctaves)
+        {
+            if (allowedOctaves.Count < selectedOctaves)
+                allowedOctaves.Add(center - down++);
+            if (allowedOctaves.Count < selectedOctaves)
+                allowedOctaves.Add(center + up++);
+        }
+
+        allowedOctaves.Sort();
+        return allowedOctaves;
     }
 
-    allowedOctaves.Sort();
-    return allowedOctaves;
-}
-
-    //mostra i nomi delle note sul piano (button MOSTA NOTE)
-    public void VisibilityNameNote()
-    {
-        isVisibleNameNote = !isVisibleNameNote;
-        // Trova tutti i figli chiamati "NameNoteText"
-        List<Transform> noteTexts = piano.transform.FindAllChildrenByName("NameNoteText");
-
-        // Attiva ciascuno
-        foreach (Transform noteText in noteTexts)
-            noteText.gameObject.SetActive(isVisibleNameNote);
-
-    }
 
     //tasto hint
     public void ShowHint()
@@ -295,21 +295,29 @@ private void OnDisable()
         }
     }
 
-    private IEnumerator ReturnToMenuAfterDelay(float delay)
-    {
+    private IEnumerator ReturnToMenuAfterDelay(float delay){
         yield return new WaitForSeconds(delay);
-
-        // Disattiva popup
-        screen2.SetActive(false);
-        screen1.SetActive(true);
-
-        // Reset stato se vuoi
-        inPlay = false;
-        point = 0;
-        lives = 3;
+        
+        Reset();
     }
 
-    private void PlayFeedbackSound(bool success)
+    public void Reset(){
+        //selectedMode="Note";
+        //selectedMelody="Happy Birthday";
+        piano.DeselectPiano();
+
+        inPlay = false;
+
+        // Disattiva popup
+        screenMenu.SetActive(true);
+        screen1.SetActive(false);
+        screen2.SetActive(false);
+        screen3.SetActive(false);
+        winPopUp.SetActive(false);
+        btnReset.SetActive(false);
+    }
+
+    public void PlayFeedbackSound(bool success)
     {
         if (audioSource == null) return;
 
@@ -321,13 +329,26 @@ private void OnDisable()
     {
         if (audioSource == null) return;
 
-        audioSource.clip = win ? winSound : loseSound;
+        audioSource.clip = winSound;
         audioSource.Play();
     }
 
 
+    // metodi dei bottoni del livello 3 
+    public void PlayMelodiaOriginale()
+    {
+        level3?.PlayOriginalMelody();
+    }
 
+    public void PlayMelodiaUtente()
+    {
+        level3?.PlayPlayerMelody();
+    }
 
+    public void ResetMelodia()
+    {
+        level3?.ResetMelody();
+    }
 
 
 }

@@ -136,8 +136,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -6718945833332717910}
         m_TargetAssemblyTypeName: Btn, Assembly-CSharp
-        m_MethodName: ButtonMaterialToHoverEnter
-        m_Mode: 1
+        m_MethodName: ButtonHover
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -151,8 +151,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: -6718945833332717910}
         m_TargetAssemblyTypeName: Btn, Assembly-CSharp
-        m_MethodName: ButtonMaterialToHoverExit
-        m_Mode: 1
+        m_MethodName: ButtonHover
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

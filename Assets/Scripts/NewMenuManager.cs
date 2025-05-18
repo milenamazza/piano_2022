@@ -8,7 +8,7 @@ public class MenuManager : MonoBehaviour
     private string selectedMode = ""; // Attualmente non utilizzato (solo Debug)
     
     // Riferimenti ai due GameObject che rappresentano le due schermate del menu
-    private GameObject startScreen1, startScreen2;
+    private GameObject screenMenu, screen1, screen2, screen3;
 
     // Pulsanti per selezionare le modalità di gioco
     private GameObject btnEasy, btnHard;
@@ -24,21 +24,19 @@ public class MenuManager : MonoBehaviour
     /// </summary>
     /// <param name="parent">GameObject che contiene i pulsanti e il contatore</param>
     /// <param name="otherScreen">GameObject della schermata successiva (es. schermo gioco)</param>
-    public void InitFromParent(GameObject parent, GameObject otherScreen){
-        startScreen1 = parent;
-        startScreen2 = otherScreen;
-
-        // Trova i pulsanti "Easy" e "Hard" all'interno della gerarchia
-        btnEasy = parent.transform.FindDeepChild("ButtonEasy")?.gameObject;
-        btnHard = parent.transform.FindDeepChild("ButtonHard")?.gameObject;
+    public void InitFromParent(GameObject sMenu, GameObject s1,  GameObject s2, GameObject s3){
+        screenMenu = sMenu;
+        screen1 = s1;
+        screen2 = s2;
+        screen3 = s3;
 
         // Trova il contatore (es. "num") e salva il componente TextMesh
-        Transform counterTransform = parent.transform.FindDeepChild("num");
-        if (counterTransform != null) 
-            counter = counterTransform.GetComponent<TextMesh>();
+        //Transform counterTransform = parent.transform.FindDeepChild("num");
+        //if (counterTransform != null) 
+        //    counter = counterTransform.GetComponent<TextMesh>();
 
-        winPopup = startScreen2.transform.FindDeepChild("WinPopup")?.gameObject;
-        losePopup = startScreen2.transform.FindDeepChild("LosePopup")?.gameObject;
+        //winPopup = startScreen2.transform.FindDeepChild("WinPopup")?.gameObject;
+        //losePopup = startScreen2.transform.FindDeepChild("LosePopup")?.gameObject;
 
         if (winPopup != null) winPopup.SetActive(false);
         if (losePopup != null) losePopup.SetActive(false);
@@ -48,9 +46,18 @@ public class MenuManager : MonoBehaviour
     /// <summary>
     /// Passa dalla schermata iniziale a quella di gioco
     /// </summary>
-    public void SwitchScreen() {
-        if (startScreen1 != null) startScreen1.SetActive(false);
-        if (startScreen2 != null) startScreen2.SetActive(true);
+    public void SwitchScreen(string mode) {
+        screenMenu.SetActive(false);
+        screen1.SetActive(false);
+        screen2.SetActive(false);
+        screen3.SetActive(false);
+        switch(mode.ToLower()){
+            case "menu": screenMenu.SetActive(true); break;
+            case "base": screen1.SetActive(true); break;
+            case "note": screen2.SetActive(true); break;
+            case "melodia": screen3.SetActive(true); break;
+            default: break;
+        }
     }
 
     /// <summary>

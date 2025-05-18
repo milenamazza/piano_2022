@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 
@@ -40,20 +41,31 @@ public class HoverHighlight : MonoBehaviour
         if (col != null) col.enabled = isEnabled;
 
         // Disattiva interazione XR
-        UnityEngine.XR.Interaction.Toolkit.XRBaseInteractable xr = GetComponent<UnityEngine.XR.Interaction.Toolkit.XRBaseInteractable>();
+        XRBaseInteractable xr = GetComponent<XRBaseInteractable>();
         if (xr != null) xr.enabled = isEnabled;
     }
 
-    public void OnHoverEnter()
-    {
-        if (GameManager.Instance.GetInPlay() && isEnabled)
-            meshRenderer.material = hoverMaterial;
+    public void OnHoverEnter(){
+       OnHover(true); 
     }
 
-    public void OnHoverExit()
-    {
-        if (GameManager.Instance.GetInPlay() && isEnabled)
-            meshRenderer.material = defaultMaterial;
+    public void OnHoverExit(){
+        OnHover(false); 
+    }
+
+    public void DisableKey(){
+        meshRenderer.material = disabledMaterial;
+    }
+
+    private void OnHover(bool active){
+        if (GameManager.Instance.GetInPlay() && isEnabled){
+            if (active) meshRenderer.material = hoverMaterial;
+            else meshRenderer.material = defaultMaterial;
+            // Attiva il testo della nota (figlio)
+            Transform noteText = transform.Find("NameNoteText");
+            if (noteText != null)
+                noteText.gameObject.SetActive(active);
+        }
     }
 
     public int GetOctave() => myOctave;

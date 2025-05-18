@@ -28,3 +28,21 @@ public enum NoteName
     C, D, E, F, G, A, B, // note base
     CSharp, DSharp, FSharp, GSharp, ASharp // diesis (per modalità difficile)
 }
+
+[System.Serializable]
+public struct TimedNote
+{
+    public Note note;
+    public float duration; // in secondi
+
+    public TimedNote(Note note, float duration)
+    {
+        this.note = note;
+        this.duration = duration;
+    }
+
+    public override string ToString()
+    {
+        return $"{note} ({duration}s)";
+    }
+}

@@ -5,22 +5,6 @@ using UnityEngine;
 // Gestisce la generazione di sequenze di note in base alla modalità scelta (Easy/Hard)
 public class NoteManager : MonoBehaviour
 {
-    // In modalità Easy: solo le note naturali (senza diesis)
-    private NoteName[] easyNotes = {
-        NoteName.C, NoteName.D, NoteName.E,
-        NoteName.F, NoteName.G, NoteName.A, NoteName.B
-    };
-
-    // In modalità Hard: tutte le 12 note della scala cromatica
-    private NoteName[] hardNotes = {
-        NoteName.C, NoteName.CSharp,
-        NoteName.D, NoteName.DSharp,
-        NoteName.E,
-        NoteName.F, NoteName.FSharp,
-        NoteName.G, NoteName.GSharp,
-        NoteName.A, NoteName.ASharp,
-        NoteName.B
-    };
 
     // gestisce l'interazione della selezione delle ottave
     private void HighlightAllowedOctaves(List<int> allowedOctaves)
@@ -55,46 +39,175 @@ public class NoteManager : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// Genera una lista di Note casuali, a partire dalla modalità e dal numero di ottave
-    /// </summary>
-    /// <param name="mode">"Easy" o "Hard"</param>
-    /// <param name="octaves">Numero di ottave su cui variare le note</param>
-    /// <param name="num">Numero di note da generare (default = 10)</param>
-    /// <returns>Una lista di oggetti Note</returns>
-    public List<Note> GenerateSequence(string mode, int octaves, int num = 10)
+    public List<Note> GenerateSequence(string songName)
     {
         List<Note> currentSequence = new List<Note>();
+        int baseOctave = 4;
 
-        NoteName[] notePool = mode == "Easy" ? easyNotes : hardNotes;
+        List<NoteName> melody;
 
-        int centerOctave = 4;
-        List<int> allowedOctaves = new List<int> { centerOctave };
-
-        int up = 1, down = 1;
-        for (int i = 1; allowedOctaves.Count < octaves; i++)
+        switch (songName.ToLower())
         {
-            if (allowedOctaves.Count < octaves)
-                allowedOctaves.Add(centerOctave - down++);
-            if (allowedOctaves.Count < octaves)
-                allowedOctaves.Add(centerOctave + up++);
+            case "fra martino": //?? non doveva essere little lamb??
+                melody = new List<NoteName> {
+                    NoteName.C, NoteName.D, NoteName.E, NoteName.C,
+                    NoteName.C, NoteName.D, NoteName.E, NoteName.C,
+                    NoteName.E, NoteName.F, NoteName.G,
+                    NoteName.E, NoteName.F, NoteName.G
+                };
+                break;
+
+            case "little lamb": 
+                melody = new List<NoteName> {
+                    NoteName.E, NoteName.D, NoteName.C, NoteName.D,
+                    NoteName.E, NoteName.E, NoteName.E, NoteName.D,
+                    NoteName.D, NoteName.D, NoteName.E, NoteName.G,
+                    NoteName.G,
+                };
+                break;
+
+            case "ode to joy":
+                melody = new List<NoteName> {
+                    NoteName.E, NoteName.E, NoteName.F, NoteName.G,
+                    NoteName.G, NoteName.F, NoteName.E, NoteName.D,
+                    NoteName.C, NoteName.C, NoteName.D, NoteName.E,
+                    NoteName.E, NoteName.D, NoteName.D
+                };
+                break;
+
+            case "happy birthday":
+                melody = new List<NoteName> {
+                    NoteName.C, NoteName.C, NoteName.D, NoteName.C,
+                    NoteName.F, NoteName.E,
+                    NoteName.C, NoteName.C, NoteName.D, NoteName.C,
+                    NoteName.G, NoteName.F
+                };
+                break;
+
+            default:
+                Debug.LogWarning("Canzone non riconosciuta. Restituita sequenza vuota.");
+                return currentSequence;
         }
 
-        // Ordina le ottave per coerenza
-        allowedOctaves.Sort();
+        // Inverti la sequenza
+        melody.Reverse();
 
-        for (int i = 0; i < num; i++)
+        // Converte la melodia in oggetti Note
+        foreach (NoteName noteName in melody)
         {
-            NoteName randomNote = notePool[Random.Range(0, notePool.Length)];
-            int octave = allowedOctaves[Random.Range(0, allowedOctaves.Count)];
-            currentSequence.Add(new Note(randomNote, octave));
+            currentSequence.Add(new Note
+            {
+                name = noteName,
+                octave = baseOctave
+            });
         }
-
-        //HighlightAllowedOctaves(allowedOctaves);
 
         return currentSequence;
     }
 
-    
+
+    public List<TimedNote> GenerateTimedMelody(string songName)
+{
+    List<TimedNote> sequence = new List<TimedNote>();
+    int baseOctave = 4;
+
+    switch (songName.ToLower())
+    {
+        case "happy birthday":
+            sequence = new List<TimedNote>
+            {
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.25f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 1f),
+
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.25f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 1f)
+            };
+            break;
+
+        case "fra martino":
+            sequence = new List<TimedNote>
+            {
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 1f),
+
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 1f)
+            };
+            break;
+
+        case "little lamb":
+            sequence = new List<TimedNote>
+            {
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 1f),
+
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 1f),
+
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 1f)
+            };
+            break;
+
+        case "ode to joy":
+            sequence = new List<TimedNote>
+            {
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.G, baseOctave), 0.5f),
+
+                new TimedNote(new Note(NoteName.G, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.F, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.C, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.5f),
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.5f),
+
+                new TimedNote(new Note(NoteName.E, baseOctave), 0.75f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 0.25f),
+                new TimedNote(new Note(NoteName.D, baseOctave), 1.0f)
+            };
+            break;
+
+
+        default:
+            Debug.LogWarning("Melodia non trovata. Restituita sequenza vuota.");
+            break;
+    }
+
+    return sequence;
+}
+
 
 }
