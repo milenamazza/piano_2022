@@ -40,7 +40,9 @@ public class GameManager : MonoBehaviour
     private string lastPlayedNote = "";
 
     //riferimento al nuovo tasto
-    public InputActionReference confirmNoteAction;
+    public InputActionReference confirmNoteActionLeft;
+    public InputActionReference confirmNoteActionRight;
+
 
     //suoni feedback
     public AudioClip correctSound;
@@ -111,10 +113,12 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(currentNote);
 
-        if (confirmNoteAction != null)
-        {
-            confirmNoteAction.action.Enable(); // 🔥 Assicurati che sia attiva
-        }
+        if (confirmNoteActionLeft != null)
+            confirmNoteActionLeft.action.Enable();
+
+        if (confirmNoteActionRight != null)
+            confirmNoteActionRight.action.Enable();
+
     }
 
     // Imposta la modalità selezionata (es. Easy o Hard)
@@ -217,17 +221,23 @@ public class GameManager : MonoBehaviour
 
 
 
-    private void OnEnable()
-    {
-        if (confirmNoteAction != null)
-            confirmNoteAction.action.performed += OnConfirmNote;
-    }
+private void OnEnable()
+{
+    if (confirmNoteActionLeft != null)
+        confirmNoteActionLeft.action.performed += OnConfirmNote;
 
-    private void OnDisable()
-    {
-        if (confirmNoteAction != null)
-            confirmNoteAction.action.performed -= OnConfirmNote;
-    }
+    if (confirmNoteActionRight != null)
+        confirmNoteActionRight.action.performed += OnConfirmNote;
+}
+
+private void OnDisable()
+{
+    if (confirmNoteActionLeft != null)
+        confirmNoteActionLeft.action.performed -= OnConfirmNote;
+
+    if (confirmNoteActionRight != null)
+        confirmNoteActionRight.action.performed -= OnConfirmNote;
+}
 
     private void OnConfirmNote(InputAction.CallbackContext ctx)
     {

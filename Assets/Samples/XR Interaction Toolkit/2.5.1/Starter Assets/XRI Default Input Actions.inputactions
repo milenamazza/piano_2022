@@ -781,6 +781,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ConfirmAction",
+                    "type": "Button",
+                    "id": "6b048ac3-2443-4bf2-93f9-e285c483ded4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -946,6 +955,17 @@
                     "processors": "ScaleVector2(x=0),StickDeadzone",
                     "groups": "Generic XR Controller",
                     "action": "Scale Delta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ecfd6783-a524-4373-a586-435a4de2621f",
+                    "path": "<XRController>{LeftHand}/{PrimaryTrigger}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConfirmAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -1761,6 +1781,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "ConfirmAction",
+                    "type": "Button",
+                    "id": "e4881538-84ce-43c5-971f-b098c2436b97",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Teleport Mode Activate",
                     "type": "Value",
                     "id": "a6c7231d-c55d-4dd4-9e87-877bb5522ef5",
@@ -1833,6 +1862,17 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Teleport Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c039c001-004d-4373-b4a0-3bf4aaaf8840",
+                    "path": "<XRController>{RightHand}/{PrimaryTrigger}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConfirmAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
