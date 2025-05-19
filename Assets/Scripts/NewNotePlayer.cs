@@ -13,7 +13,7 @@ public class NotePlayer : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null){
-            Debug.LogWarning("Nessun AudioSource trovato sul GameObject! Lo aggiungo.");
+            Debug.Log("Nessun AudioSource trovato sul GameObject! Lo aggiungo.");
             audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
