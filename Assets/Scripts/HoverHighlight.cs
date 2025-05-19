@@ -19,7 +19,7 @@ public class HoverHighlight : MonoBehaviour
 
     void Awake()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer = transform.Find("Key")?.GetComponent<MeshRenderer>();
 
         // Calcola la mia ottava leggendo il nome del parent (es: "Octave_4")
         Transform parent = transform.parent;
@@ -59,6 +59,9 @@ public class HoverHighlight : MonoBehaviour
 
     private void OnHover(bool active){
         if (GameManager.Instance.GetInPlay() && isEnabled){
+            print(hoverMaterial);
+            print("PROVE");
+            print(active);
             if (active) meshRenderer.material = hoverMaterial;
             else meshRenderer.material = defaultMaterial;
             // Attiva il testo della nota (figlio)

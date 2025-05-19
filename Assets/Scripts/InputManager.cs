@@ -1,17 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem; // Nuovo namespace
 
 public class InputManager : MonoBehaviour
 {
-    private KeyCode _keyPressed;
     [SerializeField] private NoteHighlighterManager _noteHighlighterManager;
-    
+
+    private Keyboard _keyboard;
+
+    private void Awake()
+    {
+        _keyboard = Keyboard.current;
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (_keyboard.spaceKey.wasPressedThisFrame)
         {
-            _noteHighlighterManager.SetNextKey();        
+            _noteHighlighterManager.SetNextKey();
         }
     }
 }

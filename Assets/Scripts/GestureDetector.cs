@@ -13,7 +13,7 @@ public struct Gesture
 
 public class GestureDetector : MonoBehaviour
 {
-    public float threshhold = 0.1f;
+    /*public float threshhold = 0.1f;
     public OVRSkeleton skeleton;
     public List<Gesture> gestures;
     public bool debugMode = true;
@@ -97,5 +97,5 @@ public class GestureDetector : MonoBehaviour
         }
 
         return currentGesture;
-    }
+    }*/
 }
