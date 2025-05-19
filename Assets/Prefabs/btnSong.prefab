@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7977542429877206053}
   - component: {fileID: 4354016251008212762}
   - component: {fileID: -6718945833332717910}
+  - component: {fileID: 9135574325077998311}
   m_Layer: 0
   m_Name: btnSong
   m_TagString: Untagged
@@ -146,12 +147,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 9135574325077998311}
+        m_TargetAssemblyTypeName: PlayMelody, Assembly-CSharp
+        m_MethodName: OnHover
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_LastHoverExited:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: -6718945833332717910}
         m_TargetAssemblyTypeName: Btn, Assembly-CSharp
         m_MethodName: ButtonHover
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 9135574325077998311}
+        m_TargetAssemblyTypeName: PlayMelody, Assembly-CSharp
+        m_MethodName: OnHover
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -251,6 +276,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26075fb8fdc0c4a4aa6a16e61c196fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9135574325077998311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664828022325257135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5f7cde09d87134e92bd378861482dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 37c9e69911022452a9ebd4ee732ab036, type: 3}
 --- !u!1 &6918079400052317670
 GameObject:
   m_ObjectHideFlags: 0
