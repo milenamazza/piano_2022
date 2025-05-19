@@ -2,8 +2,7 @@
 using UnityEngine;
 
 // Il GameManager gestisce lo stato globale del gioco, compresi UI, logica, e parametri di gioco.
-public class ScreenNoteManager : MonoBehaviour
-{
+public class ScreenNoteManager : MonoBehaviour {
     private GameObject screen;
     private GameObject buttonNote;
     private GameObject greenSelect;

@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScreenMelodiaManager
-{
+public class ScreenMelodiaManager: MonoBehaviour {
     private GameObject screen;
     private List<Note> playerMelody = new List<Note>();
     private AudioSource audioSource;

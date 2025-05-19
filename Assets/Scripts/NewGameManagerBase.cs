@@ -1,8 +1,7 @@
 using UnityEngine;
 
 // Il GameManager gestisce lo stato globale del gioco, compresi UI, logica, e parametri di gioco.
-public class ScreenBaseManager : MonoBehaviour
-{
+public class ScreenBaseManager : MonoBehaviour {
     private GameObject piano;
     private GameObject screen;
     private TextMesh textNote;

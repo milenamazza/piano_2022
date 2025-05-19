@@ -135,18 +135,17 @@ public class GameManager : MonoBehaviour
     public void StartMode(){
         switch(selectedMode){
             case "Base":
-                level1 = new ScreenBaseManager();
+                level1 = new GameObject("ScreenBaseManager").AddComponent<ScreenBaseManager>();
                 level1.InitManager(piano, screen1);
                 level1.selectCurrentNote(currentNote);
                 break;
             case "Note":
-                GameObject obj = new GameObject("ScreenNoteManager");
-                level2 = obj.AddComponent<ScreenNoteManager>();
+                level2 = new GameObject("ScreenNoteManager").AddComponent<ScreenNoteManager>();
                 level2.InitManager(screen2);
                 level2.selectCurrentNote(currentNote);
                 break;
             case "Melodia":
-                level3 = new ScreenMelodiaManager();
+                level3 = new GameObject("ScreenMelodiaManager").AddComponent<ScreenMelodiaManager>();
                 level3.InitManager(screen3);
                 break;
 

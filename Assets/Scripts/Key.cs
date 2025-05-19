@@ -31,7 +31,9 @@ public class Key : MonoBehaviour
             if (rend != null && defaultMat != null)
                 rend.material = defaultMat;
         }
-        catch (Exception e) { }
+        catch (Exception e) {
+            Debug.LogWarning(e);
+        }
     }
 
     public void PlaySound()

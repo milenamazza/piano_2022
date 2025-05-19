@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NotesController : MonoBehaviour
 {
-    public ParticleSystem particleSystem;
+    public ParticleSystem noteParticleSystem;
     public GameObject notes;
     public AudioSource audioSource;
 
@@ -17,7 +17,7 @@ public class NotesController : MonoBehaviour
     {
         audioSource.volume = 1;
         notes.SetActive(true);
-        particleSystem.Play();
+        noteParticleSystem.Play();
         audioSource.Play();
         StartCoroutine(DecreaseVolume());
         
@@ -26,7 +26,7 @@ public class NotesController : MonoBehaviour
     public void DisableNotes()
     {
         notes.SetActive(false);
-        particleSystem.Stop();
+        noteParticleSystem.Stop();
         StopAllCoroutines();
     }
 
