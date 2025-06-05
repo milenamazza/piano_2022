@@ -38,10 +38,8 @@ android {
     }
 
     packagingOptions {
-        doNotStrip "**/lib*.so"  // Applica a tutte le librerie native
-        jniLibs.useLegacyPackaging true  // Fix per Android 15+
-        pickFirst "lib/**/libOculusXRPlugin.so"  // Previene conflitti
-        merge "**/AndroidManifest.xml"  // Aggiunto per gestione manifest
+        jniLibs.useLegacyPackaging = false // IMPOSTA A FALSE
+        doNotStrip "**/libOculusXRPlugin.so" // MANTIENI
     }
 
     buildFeatures {
