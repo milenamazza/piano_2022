@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+**APPLY_PLUGINS**
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.core:core-ktx:1.10.0'  // Aggiunto per compatibilità
+**DEPS**}
+
+android {
+    namespace "com.unity3d.player"
+    ndkPath "**NDKPATH**"
+    compileSdkVersion **APIVERSION**
+    buildToolsVersion '**BUILDTOOLS**'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion **MINSDKVERSION**  // Imposta a 24 o superiore
+        targetSdkVersion **TARGETSDKVERSION**  // Consigliato 33
+        ndk {
+            abiFilters **ABIFILTERS**
+        }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
+
+    packagingOptions {
+        doNotStrip "**/lib*.so"  // Applica a tutte le librerie native
+        jniLibs.useLegacyPackaging true  // Fix per Android 15+
+        pickFirst "lib/**/libOculusXRPlugin.so"  // Previene conflitti
+        merge "**/AndroidManifest.xml"  // Aggiunto per gestione manifest
+    }
+
+    buildFeatures {
+        prefab true  // Richiesto per alcuni plugin XR
+    }
+}
+**IL_CPP_BUILD_SETUP**
+**SOURCE_BUILD_SETUP**
+**EXTERNAL_SOURCES**

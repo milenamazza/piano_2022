@@ -80,7 +80,7 @@
     },
     "com.unity.render-pipelines.core": {
       "version": "14.0.12",
-      "depth": 1,
+      "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
@@ -97,7 +97,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
-      "version": "17.0.4",
+      "version": "14.0.12",
       "depth": 0,
       "source": "builtin",
       "dependencies": {

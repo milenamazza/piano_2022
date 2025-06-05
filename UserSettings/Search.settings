@@ -9,9 +9,9 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
-	"last_search.66F56946" = "XR Controller"
+	"last_search.66F56946" = "tools"
 	"OpenInspectorPreview.66F56946" = "0"
-	"currentGroup.66F56946" = "all"
+	"currentGroup.66F56946" = "_group_provider_Files"
 	"picker_window_position_offset.075BCD15" = "-188,8;33,6;402,4;696"
 	"picker_visibility_flags.075BCD15" = "264"
 	"picker_item_size.075BCD15" = "96"
@@ -72,6 +72,9 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"t"
+	"Remove Missing Scripts"
+	"XR"
 	"XR Controller "
 	"XR Controller (Device-based"
 	"Controller input action manager"
@@ -82,7 +85,6 @@ recentSearches = [
 	"xr control"
 	"xr origin a"
 	"Device Simulator"
-	"OVRCameraRig"
 	"a"
 	"registry"
 	"re"
